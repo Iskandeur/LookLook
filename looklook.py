@@ -44,11 +44,19 @@ def get_host(ip):
         return "Unknown"
 
 def generate_csv(results, output_file):
+    unique_results = []
+    seen = set()
+    for res in results:
+        res_tuple = (res['Domain'], res['Subdomain'], res['IP Address'], res['Host'])
+        if res_tuple not in seen:
+            seen.add(res_tuple)
+            unique_results.append(res)
+    
     with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
         fieldnames = ['Domain', 'Subdomain', 'IP Address', 'Host']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
-        for res in results:
+        for res in unique_results:
             writer.writerow(res)
 
 def main():
